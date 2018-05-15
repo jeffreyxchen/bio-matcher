@@ -24,16 +24,21 @@ public class StableMatching {
 					" No one should be lonely!");
 		}
 		this.females = females;
+		
 		finalFemales = new TreeSet<Female>();
 		finalMales = new TreeSet<Male>();
+		
 		freeMales = new LinkedList<Male>();
 		freeMales.addAll(males);
+		
 		updated = new HashMap<String, Female>();
+		
 		Iterator<Female> it = females.iterator();
 		while (it.hasNext()) {
 			Female curr = it.next();
 			updated.put(curr.getName(), curr);
 		}
+		
 		ran = false;
 	}
 	
