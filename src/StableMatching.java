@@ -7,9 +7,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
-// This class takes care of the stable matching part of the program.
 public class StableMatching {
-
 	private Set<Female> females;
 	private Set<Female> finalFemales;
 	private Set<Male> finalMales;
@@ -17,7 +15,6 @@ public class StableMatching {
 	private Map<String, Female> updated;
 	boolean ran;
 	
-	// constructor
 	public StableMatching(Set<Male> males, Set<Female> females) {
 		if (males.size() != females.size()) {
 			throw new IllegalArgumentException("Oh no! You need an equal number of males and females!" +
@@ -42,10 +39,9 @@ public class StableMatching {
 		ran = false;
 	}
 	
-	// This method is our implementation of the Gale-Shapley algorithm for the Stable Matching problem
 	public void GaleShapley() {
 		ran = true;
-		// keep running as long as there is a free male who has not yet proposed every female
+		
 		while (!freeMales.isEmpty() && freeMales.peek().getProposed().size() != females.size()) {
 			Male curr = freeMales.peek();
 			List<Female> preferences = curr.getPreference();
@@ -53,23 +49,29 @@ public class StableMatching {
 			Iterator<Female> it = preferences.iterator();
 			while (it.hasNext()) {
 				Female currFemale = updated.get(it.next().getName());
+				
 				// check whether female has been proposed
 				if (!proposed.contains(currFemale)) {
 					proposed.add(currFemale);
 					curr.setProposed(proposed);
+					
 					// check whether female is free
 					if (currFemale.isFree()) {
 						if (finalMales.contains(curr)) finalMales.remove(curr);
 						if (finalFemales.contains(currFemale)) finalFemales.remove(currFemale);
+						
 						curr.setPartner(currFemale);
-						finalMales.add(curr);
 						currFemale.setPartner(curr);
+						
+						finalMales.add(curr);
 						finalFemales.add(currFemale);
+						
 						updated.put(currFemale.getName(), currFemale);
+						
 						freeMales.remove(curr);
+						
 						break;
-					}
-					else {
+					} else {
 						boolean br = false;
 						Iterator<Male> itMale = currFemale.getPreference().iterator();
 						boolean discovered = false;
@@ -77,7 +79,8 @@ public class StableMatching {
 							Male currMale = itMale.next();
 							if (currMale.equals(currFemale.getPartner())) discovered = true;
 							else if (currMale.equals(curr)) {
-								// checks who the female prefers and whether the partner needs to change
+								
+								// check preference
 								if (!discovered) {
 									Male m = currFemale.getPartner();
 									if (finalMales.contains(m)) finalMales.remove(m);
@@ -85,14 +88,19 @@ public class StableMatching {
 									if (finalFemales.contains(currFemale)) {
 										finalFemales.remove(currFemale);
 									}
+									
 									m.setPartner(null);
 									freeMales.add(m);
 									curr.setPartner(currFemale);
 									currFemale.setPartner(curr);
-									finalFemales.add(currFemale);
+									
 									updated.put(currFemale.getName(), currFemale);
+									
+									finalFemales.add(currFemale);
 									finalMales.add(curr);
+									
 									freeMales.remove(curr);
+									
 									br = true;
 									break;
 								}
@@ -105,13 +113,11 @@ public class StableMatching {
 		}
 	}
 
-	// returns the matched males
 	public Set<Male> getMales() {
 		if (!ran) throw new IllegalArgumentException("Run Gale Shapley First");
 		return finalMales;
 	}
 
-	// returns the matched females
 	public Set<Female> getFemales() {
 		if (!ran) throw new IllegalArgumentException("Run Gale Shapley First");
 		return finalFemales;

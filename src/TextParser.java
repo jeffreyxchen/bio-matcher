@@ -24,27 +24,30 @@ public class TextParser {
 		String os = System.getProperty("os.name");
 		String osName = os.trim().substring(0, os.indexOf(' '));
 
-		// iterate through the added files
 		for (int i = 0; i < allFiles.length; i++) {
 			String filename = allFiles[i].getPath();
-			// male case
+			// male
 			if (filename.contains("m_")) {
 				if (osName.equals("Windows")) {
 					Path temp = Files.move(Paths.get(filename), Paths
-							.get("maleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, filename.length())));
+							.get("maleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+									filename.length())));
 				} else {
 					Path temp = Files.move(Paths.get(filename),
-							Paths.get("maleBlurb/" + filename.substring(filename.indexOf('/') + 1, filename.length())));
+							Paths.get("maleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
+									filename.length())));
 				}
 			}
 			// female
 			else {
 				if (osName.equals("Windows")) {
 					Path temp = Files.move(Paths.get(filename), Paths
-							.get("femaleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, filename.length())));
+							.get("femaleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+									filename.length())));
 				} else {
 					Path temp = Files.move(Paths.get(filename), Paths
-							.get("femaleBlurb/" + filename.substring(filename.indexOf('/') + 1, filename.length())));
+							.get("femaleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
+									filename.length())));
 				}
 			}
 		}
@@ -53,41 +56,41 @@ public class TextParser {
 	public static void main(String[] args) throws IOException {
 		getFilesIntoFolder();
 
-		// folders with all the data we care about
+		// gender segregated folders
 		File maleDir = new File("maleBlurb");
 		File femaleDir = new File("femaleBlurb");
 
-		// store the males and female sets for use in Stable matching
 		HashSet<Male> orgMale = new HashSet<Male>();
 		HashSet<Female> orgFemale = new HashSet<Female>();
 
-		// hold all of the file names
+		// file names
 		ArrayList<personInfo> male = new ArrayList<personInfo>();
 		ArrayList<personInfo> female = new ArrayList<personInfo>();
-
-		// populate the male files
-		File[] maleFiles = maleDir.listFiles();
+		
 		String currFilePath = null;
+		
+		// populate male files
+		File[] maleFiles = maleDir.listFiles();
 		for (int i = 0; i < maleFiles.length; i++) {
-			// get the file path
 			currFilePath = maleFiles[i].getPath();
-			// file format f_name or h_name . txt files, get the name out
 			if (!currFilePath.contains(".txt")) {
 				continue;
 			}
-			String nameOfPerson = currFilePath.substring(currFilePath.indexOf('_') + 1, currFilePath.indexOf('.'));
+			String nameOfPerson = currFilePath.substring(currFilePath.indexOf('_') + 1, 
+					currFilePath.indexOf('.'));
 			personInfo temp = new personInfo(currFilePath, nameOfPerson);
 			male.add(temp);
 		}
 
-		// populate the female file
+		// populate female files
 		File[] femaleFiles = femaleDir.listFiles();
 		for (int i = 0; i < femaleFiles.length; i++) {
 			currFilePath = femaleFiles[i].getPath();
 			if (!currFilePath.contains(".txt")) {
 				continue;
 			}
-			String nameOfPerson = currFilePath.substring(currFilePath.indexOf('_') + 1, currFilePath.indexOf('.'));
+			String nameOfPerson = currFilePath.substring(currFilePath.indexOf('_') + 1, 
+					currFilePath.indexOf('.'));
 			personInfo temp = new personInfo(currFilePath, nameOfPerson);
 			female.add(temp);
 		}
@@ -97,26 +100,23 @@ public class TextParser {
 		ArrayList<tempRankings> toSort = new ArrayList<tempRankings>();
 		for (personInfo m : male) {
 			toCompare.add(m.document);
-			// add all the female comparisons!!
 			for (personInfo f : female) {
 				toCompare.add(f.document);
 			}
 			Corpus corpus = new Corpus(toCompare);
 			VectorSpaceModel vectorSpace = new VectorSpaceModel(corpus);
-			// now we can get Cosine similairties
+			
+			// cosine similarities
 			for (int i = 1; i < toCompare.size(); i++) {
 				tempRankings newComp = new tempRankings(female.get(i - 1).name,
 						vectorSpace.cosineSimilarity(toCompare.get(0), toCompare.get(i)));
 				toSort.add(newComp);
 			}
-			// put the people into an array
 			tempRankings[] sorted = toSort.toArray(new tempRankings[toSort.size()]);
 
 			Arrays.sort(sorted, new Comparator<tempRankings>() {
-
 				@Override
 				public int compare(tempRankings entry1, tempRankings entry2) {
-					// compare the ranks
 					if (entry1.rank == entry2.rank) {
 						return 0;
 					} else if (entry1.rank > entry2.rank) {
@@ -125,19 +125,18 @@ public class TextParser {
 						return 1;
 				}
 			});
-			// create male object
+			
 			Male toAdd = new Male(m.name);
 			orgMale.add(toAdd);
-			// set prefences by iterating thru the linked list
 			toAdd.preference = new LinkedList<Female>();
 			for (int k = 0; k < sorted.length; k++) {
 				Female added = new Female(sorted[k].name);
 				toAdd.preference.add(added);
 
 			}
+			
 			toCompare.clear();
 			toSort.clear();
-
 		}
 
 		// female comparisons
@@ -145,22 +144,21 @@ public class TextParser {
 		ArrayList<tempRankings> toSortFemale = new ArrayList<tempRankings>();
 		for (personInfo m : female) {
 			toCompare.add(m.document);
-			// add all the female comparisons!!
 			for (personInfo f : male) {
 				toCompare.add(f.document);
 			}
 			Corpus corpus = new Corpus(toCompare);
 			VectorSpaceModel vectorSpace = new VectorSpaceModel(corpus);
-			// now we can get Cosine similairties
+			
+			// cosine similarities
 			for (int i = 1; i < toCompare.size(); i++) {
 				tempRankings newComp = new tempRankings(male.get(i - 1).name,
 						vectorSpace.cosineSimilarity(toCompare.get(0), toCompare.get(i)));
 				toSort.add(newComp);
 			}
 			tempRankings[] sorted = toSort.toArray(new tempRankings[toSort.size()]);
-			// sort with a compare to method
+			
 			Arrays.sort(sorted, new Comparator<tempRankings>() {
-
 				@Override
 				public int compare(tempRankings entry1, tempRankings entry2) {
 					// sort on rank, based on the tdiff!
@@ -173,7 +171,6 @@ public class TextParser {
 				}
 			});
 
-			// store
 			Female toAdd = new Female(m.name);
 			orgFemale.add(toAdd);
 			toAdd.preference = new LinkedList<Male>();
@@ -182,19 +179,17 @@ public class TextParser {
 				toAdd.preference.add(added);
 
 			}
-			// clear lists to go to next person
+			
 			toCompare.clear();
 			toSort.clear();
 		}
 
-		// perform stable matching
 		StableMatching boeing = new StableMatching(orgMale, orgFemale);
 		boeing.GaleShapley();
 
-		// get the results
 		TreeSet<Male> resultMale = (TreeSet<Male>) boeing.getMales();
 
-		// print out the results to console
+		// printed results
 		for (Male m : resultMale) {
 			System.out.println("(" + m.getName() + ") is matched with (" + m.getPartner().getName() + ")");
 		}
