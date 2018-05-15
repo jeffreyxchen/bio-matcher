@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class TextParser {
-	// method to move files from allPeople into the appropriate folders
+	// move files from allPeople into appropriate folders
 	static void getFilesIntoFolder() throws IOException {
 		File allDir = new File("allPeople");
 
