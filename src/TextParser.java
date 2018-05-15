@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.TreeSet;
 
 public class TextParser {
@@ -29,8 +28,8 @@ public class TextParser {
 			// male
 			if (filename.contains("m_")) {
 				if (osName.equals("Windows")) {
-					Path temp = Files.move(Paths.get(filename), Paths
-							.get("maleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+					Path temp = Files.move(Paths.get(filename), 
+							Paths.get("maleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
 									filename.length())));
 				} else {
 					Path temp = Files.move(Paths.get(filename),
@@ -41,12 +40,12 @@ public class TextParser {
 			// female
 			else {
 				if (osName.equals("Windows")) {
-					Path temp = Files.move(Paths.get(filename), Paths
-							.get("femaleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+					Path temp = Files.move(Paths.get(filename), 
+							Paths.get("femaleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
 									filename.length())));
 				} else {
-					Path temp = Files.move(Paths.get(filename), Paths
-							.get("femaleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
+					Path temp = Files.move(Paths.get(filename), 
+							Paths.get("femaleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
 									filename.length())));
 				}
 			}
@@ -128,11 +127,11 @@ public class TextParser {
 			
 			Male toAdd = new Male(m.name);
 			orgMale.add(toAdd);
-			toAdd.preference = new LinkedList<Female>();
+			toAdd.setPreference(new LinkedList<Female>());
+			
 			for (int k = 0; k < sorted.length; k++) {
 				Female added = new Female(sorted[k].name);
-				toAdd.preference.add(added);
-
+				toAdd.addPreference(added);
 			}
 			
 			toCompare.clear();
@@ -173,11 +172,11 @@ public class TextParser {
 
 			Female toAdd = new Female(m.name);
 			orgFemale.add(toAdd);
-			toAdd.preference = new LinkedList<Male>();
+			toAdd.setPreference(new LinkedList<Male>());
+			
 			for (int k = 0; k < sorted.length; k++) {
 				Male added = new Male(sorted[k].name);
-				toAdd.preference.add(added);
-
+				toAdd.addPreference(added);
 			}
 			
 			toCompare.clear();

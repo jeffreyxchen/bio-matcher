@@ -2,7 +2,7 @@ import java.util.List;
 
 public class Female implements Comparable<Female>{
 	private String name;
-	List<Male> preference;
+	private List<Male> preference;
 	private Male partner;
 	
 	public Female(String name) {
@@ -28,13 +28,17 @@ public class Female implements Comparable<Female>{
 	public void setPreference(List<Male> pref) {
 		preference = pref;
 	}
+
+	public void setPartner(Male m) {
+		partner = m;
+	}
 	
-	public void setPartner(Male f) {
-		partner = f;
+	public void addPreference (Male m) {
+		this.preference.add(m);
 	}
 	
 	@Override
-	public int compareTo(Female o) {
-		return name.compareTo(o.name);
+	public int compareTo(Female f) {
+		return name.compareTo(f.name);
 	}
 }

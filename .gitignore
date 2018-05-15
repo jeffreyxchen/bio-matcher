@@ -3,6 +3,9 @@
 .project
 .settings/
 /bin
+/allPeople
+/maleBlurb
+/femaleBlurb
 
 # Intellij
 .idea/

@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class Male implements Comparable<Male>{
 	private String name;
-	List<Female> preference;
+	private List<Female> preference;
 	private Female partner;
 	private Set<Female> proposed;
 	
@@ -44,9 +44,13 @@ public class Male implements Comparable<Male>{
 	public void setPartner(Female f) {
 		partner = f;
 	}
+	
+	public void addPreference(Female f) {
+		this.preference.add(f);
+	}
 
 	@Override
-	public int compareTo(Male o) {
-		return name.compareTo(o.name);
+	public int compareTo(Male m) {
+		return name.compareTo(m.name);
 	}
 }
