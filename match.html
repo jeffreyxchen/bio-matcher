@@ -1,0 +1,155 @@
+<html>
+
+<head>
+  <style>
+    input,
+    select,
+    textarea {
+      color: #9a8478;
+      background: #ffe;
+      font-size: 0.9em;
+      border: none;
+      outline: none;
+    }
+
+    input {
+      font-size: 0.9em;
+      box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      font-family: "Arial", Arial, sans-serif;
+      color: #9a8478;
+
+      background: #ffe;
+    }
+
+    textarea {
+      resize: none;
+      background: #ffe;
+
+      box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+      margin-top: 0.5em;
+      color: #9a8478;
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      background: #fd9;
+      padding: 2em;
+      padding-top: 2.5em;
+      box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .name {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      flex-direction: row;
+
+      margin: 0.5em;
+    }
+
+    .gender {
+      display: flex;
+      justify-content: right;
+      align-items: center;
+      flex-direction: row;
+
+      margin: 0.5em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div class="title">
+      Match.txt
+    </div>
+
+    <div class="name">
+      <div style="margin-right:0.5em;">Name:</div>
+      <div>
+        <input id="inputFileNameToSaveAs"></input>
+      </div>
+    </div>
+
+    <div class="gender">
+      <div style="margin-right:0.5em;">Gender:</div>
+      <input type="radio" id="male" name="gender" value="male">
+      <label for="male" style="margin-right:0.5em;">Male</label>
+      <input type="radio" id="female" name="gender" value="female">
+      <label for="female">Female</label>
+    </div>
+
+    <div>
+      <div colspan="3">
+        <textarea id="inputTextToSave" cols="80" rows="25"></textarea>
+      </div>
+    </div>
+
+    <div>
+      <div><button onclick="saveTextAsFile()">Submit</button></div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    function saveTextAsFile() {
+      var textToSave = document.getElementById("inputTextToSave").value;
+      var textToSaveAsBlob = new Blob([textToSave], {
+        type: "text/plain"
+      });
+
+      var gender = "";
+      if (document.getElementById("male").checked) {
+        gender = "m";
+      } else if (document.getElementById("female").checked) {
+        gender = "f";
+      } else {
+        alert("You must check a gender!");
+        return;
+      }
+
+      var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+
+      var name = document.getElementById("inputFileNameToSaveAs").value;
+      name = name.trim().split(" ").join("_");
+      var fileNameToSaveAs = (gender + "_" + name).toLowerCase();
+
+      var downloadLink = document.createElement("a");
+      downloadLink.download = fileNameToSaveAs;
+      downloadLink.innerHTML = "Download File";
+      downloadLink.href = textToSaveAsURL;
+      downloadLink.onclick = destroyClickedElement;
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+    }
+
+    function destroyClickedElement(event) {
+      document.body.removeChild(event.target);
+    }
+  </script>
+
+</body>
+
+</html>

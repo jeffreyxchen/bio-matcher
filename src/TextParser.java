@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class TextParser {
-	// move files from allPeople into appropriate folders
+	// move files from all into appropriate folders
 	static void getFilesIntoFolder() throws IOException {
-		File allDir = new File("allPeople");
+		File allDir = new File("all");
 
 		File[] allFiles = allDir.listFiles();
 
@@ -29,11 +29,11 @@ public class TextParser {
 			if (filename.contains("m_")) {
 				if (osName.equals("Windows")) {
 					Path temp = Files.move(Paths.get(filename), 
-							Paths.get("maleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+							Paths.get("male\\" + filename.substring(filename.indexOf('\\') + 1, 
 									filename.length())));
 				} else {
 					Path temp = Files.move(Paths.get(filename),
-							Paths.get("maleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
+							Paths.get("male/" + filename.substring(filename.indexOf('/') + 1, 
 									filename.length())));
 				}
 			}
@@ -41,11 +41,11 @@ public class TextParser {
 			else {
 				if (osName.equals("Windows")) {
 					Path temp = Files.move(Paths.get(filename), 
-							Paths.get("femaleBlurb\\" + filename.substring(filename.indexOf('\\') + 1, 
+							Paths.get("female\\" + filename.substring(filename.indexOf('\\') + 1, 
 									filename.length())));
 				} else {
 					Path temp = Files.move(Paths.get(filename), 
-							Paths.get("femaleBlurb/" + filename.substring(filename.indexOf('/') + 1, 
+							Paths.get("female/" + filename.substring(filename.indexOf('/') + 1, 
 									filename.length())));
 				}
 			}
@@ -56,8 +56,8 @@ public class TextParser {
 		getFilesIntoFolder();
 
 		// gender segregated folders
-		File maleDir = new File("maleBlurb");
-		File femaleDir = new File("femaleBlurb");
+		File maleDir = new File("male");
+		File femaleDir = new File("female");
 
 		HashSet<Male> orgMale = new HashSet<Male>();
 		HashSet<Female> orgFemale = new HashSet<Female>();

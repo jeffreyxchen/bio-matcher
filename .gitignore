@@ -3,9 +3,9 @@
 .project
 .settings/
 /bin
-/allPeople
-/maleBlurb
-/femaleBlurb
+/all
+/male
+/female
 
 # Intellij
 .idea/
